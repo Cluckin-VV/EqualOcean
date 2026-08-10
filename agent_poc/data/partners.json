@@ -1,0 +1,24 @@
+[
+  {
+    "partner_id": "partner_demo_nasdaq",
+    "company_name": "Nasdaq",
+    "role": "投资研究与战略团队",
+    "tags": ["投资方", "资本市场"],
+    "confirmed_interests": [],
+    "profile_source": "project_target_customer",
+    "profile_status": "target_customer",
+    "simulation_input_confidence": null,
+    "confidence_note": "Nasdaq 是项目预留的目标客户位；当前行为数据仍待正式确认后替换。"
+  },
+  {
+    "partner_id": "partner_primary_cheng_shaokai",
+    "company_name": "程少楷",
+    "role": "",
+    "tags": [],
+    "confirmed_interests": [],
+    "profile_source": "reserved_primary_customer_slot",
+    "profile_status": "reserved_empty",
+    "simulation_input_confidence": null,
+    "confidence_note": "预留主要服务客户位；当前不填充行为、兴趣或投资偏好。"
+  }
+]
