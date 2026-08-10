@@ -77,6 +77,8 @@ def run_live_consultation(
         "customer": customer,
         "behavior_context": behavior_context,
         "retrieved_at": data_result.get("retrieved_at"),
+        "query_type": data_result.get("query_type"),
+        "query_applied": data_result.get("query_applied"),
         "data_status": data_result.get("status"),
         "data_source": data_result.get("source"),
         "source_count": len(sources),
