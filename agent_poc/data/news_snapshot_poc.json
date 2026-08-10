@@ -1,0 +1,50 @@
+[
+  {
+    "report_id": "681ba6b74ea87e39d6adc0e501b3251c",
+    "title": "孚日股份：预计2026年半年度净利润同比增长50.02%-70.27%",
+    "summary": "孚日股份披露2026年半年度业绩预告，家纺主业和电解液添加剂业务带动利润增长。",
+    "published_at": "2026-07-01 17:20:10",
+    "source_url": "https://api3.cls.cn/share/article/2414311?os=web&sv=7.2.2&app=CailianpressWeb",
+    "source": "财联社-快讯-公告",
+    "verification_status": "pending",
+    "semantic_matching_status": "ready_for_review",
+    "data_quality_flags": [],
+    "processing_version": "news-snapshot-poc-v1"
+  },
+  {
+    "report_id": "e65d133bb8b27a1d90ac818f22a44efa",
+    "title": "纳睿雷达发布S波段相控阵雷达及AI气象大模型产品",
+    "summary": "纳睿雷达公开发布新型雷达和AI气象大模型产品，并提示产品尚处发展初期。",
+    "published_at": "2026-07-01 17:18:19",
+    "source_url": "https://api3.cls.cn/share/article/2414310?os=web&sv=7.2.2&app=CailianpressWeb",
+    "source": "财联社-快讯-公告",
+    "verification_status": "pending",
+    "semantic_matching_status": "ready_for_review",
+    "data_quality_flags": [],
+    "processing_version": "news-snapshot-poc-v1"
+  },
+  {
+    "report_id": "67f81395126fcdbbc742cfb62499fd1b",
+    "title": "天邑股份中标中国电信天翼智屏集中采购项目",
+    "summary": "天邑股份成为中国电信天翼智屏产品集中采购项目成交人之一。",
+    "published_at": "2026-07-01 17:08:00",
+    "source_url": "https://www.zhitongcaijing.com/content/detail/1461872.html",
+    "source": "智通财经",
+    "verification_status": "pending",
+    "semantic_matching_status": "ready_for_review",
+    "data_quality_flags": [],
+    "processing_version": "news-snapshot-poc-v1"
+  },
+  {
+    "report_id": "d369d59d9bfbff0dae6649f5fd1bcbec",
+    "title": "福元医药左甲状腺素钠片获药品补充申请批准",
+    "summary": "福元医药收到国家药监局颁发的药品补充申请批准通知书。",
+    "published_at": "2026-07-01 17:02:25",
+    "source_url": "https://api3.cls.cn/share/article/2414283?os=web&sv=7.2.2&app=CailianpressWeb",
+    "source": "财联社-快讯-公告",
+    "verification_status": "pending",
+    "semantic_matching_status": "ready_for_review",
+    "data_quality_flags": [],
+    "processing_version": "news-snapshot-poc-v1"
+  }
+]

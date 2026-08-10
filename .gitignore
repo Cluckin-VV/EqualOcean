@@ -1,0 +1,7 @@
+__pycache__/
+*.py[cod]
+.env
+.env.*
+*.sqlite3
+.doc_review/
+agent_poc/output/
