@@ -9,6 +9,7 @@ from agent_poc.live_operation_agent import (
     render_live_answer_markdown,
     run_live_consultation,
 )
+from agent_poc.run_qwen_smoke import answer_grounded_question
 from agent_poc.run_demo import load_news_input
 
 
@@ -59,6 +60,43 @@ class OfficialLinkTests(unittest.TestCase):
 
 
 class LiveOperationAgentTests(unittest.TestCase):
+    def test_smoke_entry_accepts_any_question_and_fetches_matching_official_sources(self):
+        class FakeDataClient:
+            def consult(self, question, limit=10):
+                self.question = question
+                return {
+                    "status": "ok",
+                    "query_type": "policy",
+                    "items": [{
+                        "record_id": "policy-001",
+                        "record_type": "policy",
+                        "title": "跨境数据政策更新",
+                        "summary": "政策摘要",
+                        "published_at": "2026-08-10",
+                        "source": "亿欧数据",
+                        "source_url": "https://data.iyiou.com/intelligence/details/policy-001",
+                        "attributes": {},
+                    }],
+                    "source": {"site": "data.iyiou.com"},
+                    "retrieved_at": "2026-08-10T00:00:00+00:00",
+                }
+
+        class FakeQwenClient:
+            def complete(self, messages, **kwargs):
+                self.messages = messages
+                return {"model": "qwen-flash", "content": "该政策有助于提前准备合规披露。", "usage": {}}
+
+        data_client = FakeDataClient()
+        qwen_client = FakeQwenClient()
+        question = "最近的跨境数据政策对准备赴美上市的企业有什么帮助？"
+
+        result = answer_grounded_question(question, limit=3, data_client=data_client, qwen_client=qwen_client)
+
+        self.assertEqual(data_client.question, question)
+        self.assertEqual(result["query_type"], "policy")
+        self.assertEqual(result["sources"][0]["record_id"], "policy-001")
+        self.assertIn(question, qwen_client.messages[1]["content"])
+
     def setUp(self):
         self.partner = {
             "partner_id": "partner_demo_nasdaq",
