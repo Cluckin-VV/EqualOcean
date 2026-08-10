@@ -1,0 +1,62 @@
+[
+  {
+    "content_id": "681ba6b74ea87e39d6adc0e501b3251c",
+    "source_url": "https://api3.cls.cn/share/article/2414311?os=web&sv=7.2.2&app=CailianpressWeb",
+    "company_ids": ["company_anker_demo"],
+    "company_match_status": "matched",
+    "change_type": "new",
+    "quality_status": "passed",
+    "translation_status": "passed",
+    "dedup_status": "unique",
+    "publish_status": "candidate",
+    "data_version": "data-agent-v0.1-demo-20260806",
+    "content_version": "content-v1",
+    "quality_flags": [],
+    "simulated": true
+  },
+  {
+    "content_id": "e65d133bb8b27a1d90ac818f22a44efa",
+    "source_url": "https://api3.cls.cn/share/article/2414310?os=web&sv=7.2.2&app=CailianpressWeb",
+    "company_ids": ["company_anker_demo"],
+    "company_match_status": "matched",
+    "change_type": "event_update",
+    "quality_status": "passed",
+    "translation_status": "passed",
+    "dedup_status": "merged",
+    "publish_status": "candidate",
+    "data_version": "data-agent-v0.1-demo-20260806",
+    "content_version": "content-v2",
+    "quality_flags": [],
+    "simulated": true
+  },
+  {
+    "content_id": "67f81395126fcdbbc742cfb62499fd1b",
+    "source_url": "https://www.zhitongcaijing.com/content/detail/1461872.html",
+    "company_ids": ["company_anker_demo"],
+    "company_match_status": "matched",
+    "change_type": "new",
+    "quality_status": "passed",
+    "translation_status": "passed",
+    "dedup_status": "unique",
+    "publish_status": "candidate",
+    "data_version": "data-agent-v0.1-demo-20260806",
+    "content_version": "content-v1",
+    "quality_flags": [],
+    "simulated": true
+  },
+  {
+    "content_id": "d369d59d9bfbff0dae6649f5fd1bcbec",
+    "source_url": "https://api3.cls.cn/share/article/2414283?os=web&sv=7.2.2&app=CailianpressWeb",
+    "company_ids": ["company_anker_demo"],
+    "company_match_status": "matched",
+    "change_type": "new",
+    "quality_status": "passed",
+    "translation_status": "passed",
+    "dedup_status": "unique",
+    "publish_status": "candidate",
+    "data_version": "data-agent-v0.1-demo-20260806",
+    "content_version": "content-v1",
+    "quality_flags": [],
+    "simulated": true
+  }
+]
