@@ -282,58 +282,180 @@ def _collect_source_refs(
         handoff = data_agent_by_id.get(report_id) if data_agent_by_id is not None else None
         if data_agent_by_id is not None and handoff is None:
             reasons = ["data_agent_handoff_not_found"]
-          …26294 tokens truncated…   "content": "决定先使用官网只读数据，不绕过登录权限。",
-                "created_at": "2026-07-02T09:00:00+08:00",
-                "message_type": "decision",
-            },
-            {
-                "message_id": "m-correction",
-                "role": "user",
-                "content": "修正：Nasdaq 是目标客户，不要再写成普通模拟用户。",
-                "created_at": "2026-07-03T09:00:00+08:00",
-                "message_type": "correction",
-            },
-            {
-                "message_id": "m-recent",
-                "role": "user",
-                "content": "请查今天的融资事件。",
-                "created_at": "2026-08-06T09:00:00+08:00",
-            },
-            {
-                "message_id": "m-duplicate",
-                "role": "assistant",
-                "content": "请查今天的融资事件。",
-                "created_at": "2026-08-06T09:01:00+08:00",
-            },
-        ]
+            quality_flags.update(reasons)
+            blocked_content_refs.append({"content_id": report_id, "reasons": reasons})
+            feedback_items.append(
+                {
+                    "action": "request_handoff_record",
+                    "content_id": report_id,
+                    "event_id": _event_id(event),
+                    "reasons": reasons,
+                }
+            )
+            continue
+        if handoff is not None:
+            quality_flags.update(handoff.get("quality_flags") or [])
+            ready, reasons = _handoff_readiness(handoff)
+            if not ready:
+                quality_flags.update(reasons)
+                blocked_content_refs.append(
+                    {
+                        "content_id": report_id,
+                        "change_type": handoff.get("change_type"),
+                        "content_version": handoff.get("content_version"),
+                        "reasons": reasons,
+                    }
+                )
+                feedback_items.append(
+                    {
+                        "action": "reprocess_content",
+                        "content_id": report_id,
+                        "event_id": _event_id(event),
+                        "reasons": reasons,
+                    }
+                )
+                continue
+        source_ref = {
+            "report_id": report_id,
+            "content_id": report_id,
+            "source_url": handoff.get("source_url") if handoff is not None else item.get("source_url"),
+            "source": item.get("source"),
+            "verification_status": item.get("verification_status"),
+            "semantic_matching_status": item.get("semantic_matching_status"),
+        }
+        if handoff is not None:
+            for field in (
+                "company_ids",
+                "company_match_status",
+                "change_type",
+                "quality_status",
+                "translation_status",
+                "dedup_status",
+                "publish_status",
+                "data_version",
+                "content_version",
+            ):
+                source_ref[field] = handoff.get(field)
+        source_refs.append(source_ref)
+    return (
+        source_refs[:MAX_HISTORY_EVIDENCE],
+        quality_flags,
+        blocked_content_refs[:MAX_HISTORY_EVIDENCE],
+        feedback_items[:MAX_HISTORY_EVIDENCE],
+    )
 
-        result = compact_conversation(messages, recent_limit=2)
 
-        kept_ids = result["source_message_ids"]
-        self.assertIn("m-goal", kept_ids)
-        self.assertIn("m-decision", kept_ids)
-        self.assertIn("m-correction", kept_ids)
-        self.assertIn("m-recent", kept_ids)
-        self.assertNotIn("m-old-chat", kept_ids)
-        self.assertGreaterEqual(result["dropped_message_count"], 1)
-        self.assertGreater(score_message_utility(messages[1]), score_message_utility(messages[0]))
+def _handoff_readiness(record: dict[str, Any]) -> tuple[bool, list[str]]:
+    """Check whether a data-agent record is safe for operations-agent evidence."""
+
+    reasons: list[str] = []
+    for field in HANDOFF_REQUIRED_FIELDS:
+        if field not in record or record.get(field) in (None, ""):
+            reasons.append(f"handoff_missing_{field}")
+    if record.get("company_match_status") != "matched":
+        reasons.append("company_match_not_ready")
+    if record.get("quality_status") != "passed":
+        reasons.append("quality_not_ready")
+    if record.get("translation_status") != "passed":
+        reasons.append("translation_not_ready")
+    if record.get("dedup_status") not in READY_DEDUP_STATUSES:
+        reasons.append("dedup_not_ready")
+    if record.get("publish_status") != "candidate":
+        reasons.append("publish_not_ready")
+    if record.get("change_type") == "full_overlap":
+        reasons.append("full_overlap")
+    if not str(record.get("source_url") or "").startswith(("http://", "https://")):
+        reasons.append("source_url_missing_or_invalid")
+    return not reasons, sorted(set(reasons))
 
 
-class RetentionPolicyTests(unittest.TestCase):
-    def test_cleanup_plan_deletes_only_expired_non_held_records(self):
-        now = datetime(2026, 8, 6, 12, 0, tzinfo=timezone.utc)
-        with tempfile.TemporaryDirectory() as temp_dir:
-            path = Path(temp_dir) / "session.jsonl"
-            rows = [
-                {"message_id": "recent", "created_at": "2026-08-01T12:00:00+00:00"},
-                {"message_id": "expired", "created_at": "2026-07-01T12:00:00+00:00"},
-                {"message_id": "held", "created_at": "2026-07-01T12:00:00+00:00", "legal_hold": True},
-            ]
-            path.write_text("\n".join(json.dumps(row) for row in rows) + "\n", encoding="utf-8")
+def analyze_partner(
+    partner: dict[str, Any],
+    events: list[dict[str, Any]],
+    news: list[dict[str, Any]],
+    data_agent_records: list[dict[str, Any]] | None = None,
+) -> dict[str, Any]:
+    """Produce the minimal operations-agent result for one partner."""
 
-            plan = plan_jsonl_cleanup(path, now=now, retention_days=15)
+    partner_id = str(partner.get("partner_id") or "")
+    partner_events = [event for event in events if str(event.get("partner_id")) == partner_id]
+    recent = _recent_events(partner_events)
+    news_by_id = {str(item.get("report_id")): item for item in news}
+    data_agent_by_id = (
+        {str(item.get("content_id")): item for item in data_agent_records}
+        if data_agent_records is not None
+        else None
+    )
+    source_refs, quality_flags, blocked_content_refs, feedback_items = _collect_source_refs(
+        recent,
+        news_by_id,
+        data_agent_by_id,
+    )
 
-            self.assertEqual(plan["delete_ids"], ["expired"])
-            self.assertEqual(plan["keep_ids"], ["recent", "held"])
-            self.assertEqual(plan["held_ids"], ["held"])
-        self.assertFalse(path.exists())
+    intent = judge_intent(recent)
+    profile_proposals = propose_profile_changes(recent)
+    rule_score = sum(_event_score(event) for event in recent)
+    input_snapshot = {
+        "partner": partner,
+        "recent_events": recent,
+        "source_refs": source_refs,
+        "data_agent_handoff": [
+            data_agent_by_id.get(str(event.get("object_id")))
+            for event in recent
+            if data_agent_by_id is not None and event.get("object_type") == "news" and data_agent_by_id.get(str(event.get("object_id")))
+        ],
+        "context_policy": {
+            "recent_event_limit": MAX_RECENT_EVENTS,
+            "history_evidence_limit": MAX_HISTORY_EVIDENCE,
+        },
+    }
+    run_id = f"run_{_stable_id(input_snapshot)}"
+    return {
+        "run_id": run_id,
+        "partner_id": partner_id,
+        "partner_snapshot": {
+            "company_name": partner.get("company_name"),
+            "role": partner.get("role"),
+            "tags": partner.get("tags", []),
+            "profile_status": partner.get("profile_status"),
+        },
+        "intent": intent,
+        "profile_proposals": profile_proposals,
+        "profile_write_action": "proposal_only",
+        "lead_proposal": {
+            "rule_score": rule_score,
+            "recommended_action": _recommended_action(intent["stage"]),
+            "evidence_ids": [_event_id(event) for event in recent if _event_score(event) > 0],
+        },
+        "source_refs": source_refs,
+        "data_handoff": {
+            "mode": "data_agent_contract_v0.1" if data_agent_records is not None else "legacy_news_snapshot",
+            "ready_content_count": len(source_refs),
+            "blocked_content_refs": blocked_content_refs,
+            "feedback_items": feedback_items,
+        },
+        "data_quality_flags": sorted(quality_flags),
+        "needs_human_review": True,
+        "audit": {
+            "input_snapshot_id": _stable_id(input_snapshot),
+            "rule_version": RULE_VERSION,
+            "model": "none",
+            "tool_calls": [
+                "read_partner_snapshot",
+                "read_recent_behavior",
+                "read_news_snapshot",
+                *(["read_data_agent_handoff"] if data_agent_records is not None else []),
+            ],
+            "token_usage": None,
+            "context_policy": "recent 10 events + profile summary + max 5 source refs; no full history",
+            "simulated_input": bool(recent) and all(bool(event.get("simulated")) for event in recent),
+        },
+    }
+
+
+def write_json(path: str | Path, value: Any) -> None:
+    target = Path(path)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    with target.open("w", encoding="utf-8") as handle:
+        json.dump(value, handle, ensure_ascii=False, indent=2)
+        handle.write("\n")
