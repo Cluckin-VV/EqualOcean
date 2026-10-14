@@ -24,5 +24,5 @@ The working branch passed **14 unit tests**, TypeScript checking, lint and a Nex
 
 The work demonstrated preferences, consent and preview/test-delivery behavior. It does not claim that real billing, unrestricted email delivery or a production membership rollout was launched.
 
-The screenshot in the repository is a self-made reconstruction using fictional companies and generic text. It demonstrates the interaction model without exposing the employer's interface or data.
+The screenshots in the repository are from the local development environment. The personal email and avatar identifier were replaced before publication. They show a consented preference state and a failed-save feedback state; they do not show a production deployment or real customer data.
 

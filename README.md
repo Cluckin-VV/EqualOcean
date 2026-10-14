@@ -37,9 +37,13 @@ Implemented and validated authenticated account, privacy and subscription flows 
 
 - **14 unit tests**, TypeScript check, lint and production build passed in the working branch;
 - preview and test-delivery paths only; no claim of production billing or unrestricted sending;
-- the image below is a self-made, fictional-data reconstruction for portfolio explanation.
+- the screenshots below come from the local development build and have been sanitized to remove personal account information.
 
-![Sanitized ChinaList interaction mock](assets/chinalist-sanitized-mock.png)
+![Sanitized local ChinaList notification settings](assets/chinalist-notification-settings-sanitized.png)
+
+The error-state screenshot is retained because failure feedback and consent boundaries were part of the work:
+
+![Sanitized local ChinaList save error state](assets/chinalist-save-error-sanitized.png)
 
 [Read the sanitized case study](docs/chinalist.md)
 
@@ -59,5 +63,5 @@ Converted an already-running linear workflow into a design for scheduled, review
 
 ## Why this repository contains documentation instead of company code
 
-Portfolio evidence should make work assessable without transferring an employer's intellectual property. These pages therefore focus on the problem, decisions, interfaces, safeguards, verification and honest limits. Diagrams and screenshots use fictional data.
+Portfolio evidence should make work assessable without transferring an employer's intellectual property. These pages therefore focus on the problem, decisions, interfaces, safeguards, verification and honest limits. Screenshots are from a local development environment and use a replacement account identity.
 
