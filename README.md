@@ -1,35 +1,63 @@
-# EqualOcean — Auditable AI Operations Agent POC
+# EqualOcean Internship Portfolio — Sanitized Case Studies
 
-面向海外企业订阅与运营分析场景的 AI 工作流原型。项目重点不是让模型直接替代业务决策，而是把来源、状态、判断依据和人工复核连接成可追踪流程。
+This repository documents three pieces of work from an AI Agent and data-product internship. It is a **sanitized portfolio**, not a copy of the employer's repositories.
 
-## What it explores
+No company source code, credentials, internal endpoints, customer records, private prompts, database details or production screenshots are included.
 
-- 多来源记录的字段标准化与幂等入库
-- 基于 SQLite 的状态、客户上下文与记忆管理
-- 来源校验、质量门禁与异常路径处理
-- 模型建议与人工决策之间的明确权限边界
-- 可复现的本地运行、测试与交接文档
+## Featured: Auditable Operations Agent
 
-## Workflow
+The central project is a local proof of concept for turning an enterprise question and authorized behavior signals into evidence-linked content, lead and outreach candidates.
 
-```text
-source records
-  -> normalize and validate
-  -> idempotent SQLite ingestion
-  -> customer question/context
-  -> candidate analysis
-  -> quality gate
-  -> human review
+```mermaid
+flowchart LR
+    A[Enterprise question] --> B[Intent and scope]
+    C[Authorized signals] --> D[Evidence retrieval]
+    B --> D
+    D --> E[Candidate analysis]
+    E --> F{Quality gate}
+    F -->|review| G[Human review]
+    F -->|blocked| H[Blocked / failed]
+    G --> I[Approved deliverable]
 ```
 
-## Repository status
+- explicit state machine and failure states;
+- evidence retained for important conclusions;
+- customer isolation, selective memory and retention controls;
+- lead score used for prioritization, never presented as conversion probability;
+- no automatic email, publishing or subscription changes;
+- current local POC verified with **77 automated tests**.
 
-This public repository is a portfolio baseline. The local working version may be ahead of the public code and has been verified with 62 unit tests. No production availability, autonomous business decision or unrestricted internal-data access is claimed.
+[Read the sanitized case study](docs/operations-agent.md)
 
-## Why this matters
+## Other product work
 
-The project treats traceability, reversibility and reviewability as product requirements. Important outputs retain source evidence, and low-confidence or high-risk cases are routed to people.
+### ChinaList subscription experience
 
-## Author
+Implemented and validated authenticated account, privacy and subscription flows for an enterprise-intelligence product: database sessions, protected pages/APIs, consent withdrawal, time-zone-aware preferences, personal/team watchlists and digest previews.
 
-[Cluckin-VV](https://github.com/Cluckin-VV)
+- **14 unit tests**, TypeScript check, lint and production build passed in the working branch;
+- preview and test-delivery paths only; no claim of production billing or unrestricted sending;
+- the image below is a self-made, fictional-data reconstruction for portfolio explanation.
+
+![Sanitized ChinaList interaction mock](assets/chinalist-sanitized-mock.png)
+
+[Read the sanitized case study](docs/chinalist.md)
+
+### AI weekly-report workflow refactor
+
+Converted an already-running linear workflow into a design for scheduled, reviewable and replayable execution. The proposal introduced stable task identity, node-level status, retry policies, input hashes, audit gates and feedback archives while preserving the original core pipeline.
+
+[Read the sanitized case study](docs/ai-weekly-workflow.md)
+
+## Verification boundaries
+
+| Item | Verified | Boundary |
+|---|---|---|
+| Operations Agent | 77 local automated tests pass | Local POC; no production deployment claimed |
+| ChinaList | 14 unit tests + typecheck + lint + production build | Work completed in internal branches; code is not redistributed |
+| Weekly workflow | Architecture and delivery plan reviewed from project material | This repository documents the design; it does not claim the entire production rollout |
+
+## Why this repository contains documentation instead of company code
+
+Portfolio evidence should make work assessable without transferring an employer's intellectual property. These pages therefore focus on the problem, decisions, interfaces, safeguards, verification and honest limits. Diagrams and screenshots use fictional data.
+
