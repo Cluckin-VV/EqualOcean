@@ -39,7 +39,9 @@ The initial product blueprint used one operations hub and five specialized agent
 
 ## Verification
 
-The current local POC passes **77 automated tests**. A separate sanitized memory-recall evaluation covered 12 cases. Test coverage includes state transitions, evidence checks, customer boundaries, review gates and failure paths.
+The current local core POC passes **62 automated regression tests**. A separate sanitized memory-recall evaluation covered 12 cases. Test coverage includes state transitions, evidence checks, customer boundaries, review gates and failure paths.
+
+Verification scope (2026-10-14): the original core POC passed 62/62 tests. The migrated POC ran 77 tests: 72 passed and five PostgreSQL integration tests could not initialize because the selected Python environment lacked `psycopg`. A separate service-layer suite passed 5/5. These suites overlap and must not be added together as a unique test count. The migrated suite is not currently claimed as fully passing; none of these results measures production uptime, active users or business conversion.
 
 ## Current limits
 

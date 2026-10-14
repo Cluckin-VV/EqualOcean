@@ -26,7 +26,7 @@ flowchart LR
 - customer isolation, selective memory and retention controls;
 - lead score used for prioritization, never presented as conversion probability;
 - no automatic email, publishing or subscription changes;
-- current local POC verified with **77 automated tests**.
+- current local core POC verified with **62 automated regression tests**.
 
 [Read the sanitized case study](docs/operations-agent.md)
 
@@ -58,7 +58,7 @@ Converted an already-running linear workflow into a design for scheduled, review
 
 | Item | Verified | Boundary |
 |---|---|---|
-| Operations Agent | 77 local automated tests pass | Local POC; no production deployment claimed |
+| Operations Agent | 62 local core regression tests pass | Local POC; no production deployment claimed |
 | ChinaList | 14 unit tests + typecheck + lint + production build | Work completed in internal branches; code is not redistributed |
 | Weekly workflow | Architecture and delivery plan reviewed from project material | This repository documents the design; it does not claim the entire production rollout |
 
