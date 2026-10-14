@@ -20,6 +20,7 @@ flowchart LR
     G --> I[Approved deliverable]
 ```
 
+- product architecture evolved from an operations hub plus five capability agents into one testable orchestrator for the first POC;
 - explicit state machine and failure states;
 - evidence retained for important conclusions;
 - customer isolation, selective memory and retention controls;

@@ -24,6 +24,10 @@ RECEIVED → CLASSIFIED → RETRIEVING → EVIDENCE_READY
 Exceptional outcomes: BLOCKED / FAILED
 ```
 
+## Architecture evolution
+
+The initial product blueprint used one operations hub and five specialized agent roles for behavior analysis, customer-profile candidates, intent analysis, content or email drafts, and lead or next-action suggestions. During POC delivery, I narrowed that design to one explicit orchestrator with typed stages. This reduced handoff ambiguity, made failures and evidence easier to test, and avoided a multi-agent design before real data and permissions were available. The five roles remain product capability boundaries rather than a claim that five production agents were deployed.
+
 ## Engineering decisions
 
 - **Evidence before recommendation.** Important outputs retain links to the source records used.
